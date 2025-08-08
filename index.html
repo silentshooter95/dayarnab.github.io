@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dayarnab Baidya</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for use in the HTML. -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* Use Inter font for better readability */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        /* Canvas Background */
+        #canvas-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        /* Custom Button Styling */
+        .btn-primary {
+            background: linear-gradient(to right, #FDE047, #FCD34D); /* Yellow gradient */
+            color: #111827;
+            font-weight: 700;
+            padding: 0.75rem 2.5rem;
+            border-radius: 9999px; /* Fully rounded */
+            box-shadow: 0 4px 14px rgba(253, 224, 71, 0.4);
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(253, 224, 71, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Get in touch button on bio page */
+        .get-in-touch-btn {
+            background: linear-gradient(to right, #34d399, #10b981); /* Green gradient */
+            color: #111827;
+            font-weight: 700;
+            padding: 0.75rem 2.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 14px rgba(52, 211, 153, 0.4);
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .get-in-touch-btn:hover {
+            box-shadow: 0 6px 20px rgba(52, 211, 153, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Navigation Link Hover Effect */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fde047;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #fde047;
+        }
+        .nav-link:hover:after,
+        .nav-link.active:after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #fde047;
+        }
+
+        /* Contact Form Styling */
+        .contact-input {
+            width: 100%;
+            background-color: #111827;
+            border: 1px solid #374151;
+            color: white;
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .contact-input:focus {
+            outline: none;
+            border-color: #fde047;
+            box-shadow: 0 0 0 2px rgba(253, 224, 71, 0.2);
+        }
+        .contact-input::placeholder {
+            color: #6b7280;
+        }
+
+        .contact-info-card {
+            background-color: transparent;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border: 1px solid transparent;
+        }
+        .contact-info-card:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .contact-form-container {
+            background: transparent;
+            border: 1px solid #374151;
+            box-shadow: none;
+            transition: all 0.3s ease;
+        }
+        .contact-form-container:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: #fde047;
+        }
+        
+        /* Social Icon Styling */
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .social-icon .icon-container {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover .icon-container {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Custom Gradient Text Animation */
+        @keyframes text-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-text-gradient {
+            background-image: linear-gradient(to right, #E5E7EB, #FDE047, #FCD34D, #FDE047, #E5E7EB);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: text-gradient 4s ease-in-out infinite;
+        }
+        /* Page transition class */
+        .page-content.hidden {
+            display: none;
+        }
+        .page-content.visible {
+            display: flex;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Canvas Background -->
+    <canvas id="canvas-background"></canvas>
+    
+    <!-- Main content wrapper -->
+    <div class="relative z-10 bg-black/20 min-h-screen flex flex-col p-4 sm:p-6 lg:p-8 text-gray-50">
+
+        <!-- Header -->
+        <header class="w-full text-center mb-8 sticky top-0 bg-black/50 backdrop-blur-sm z-20 py-4 rounded-b-xl border-b border-gray-800">
+            <p id="quote-text" class="font-['Dancing_Script'] text-xl sm:text-2xl italic text-gray-300 transition-opacity duration-500">Loading quote...</p>
+            <p id="author-text" class="text-sm font-semibold text-yellow-400 mt-1 transition-opacity duration-500"></p>
+            <nav class="mt-6">
+                <ul class="flex flex-wrap justify-center space-x-4 md:space-x-8">
+                    <li><button class="nav-link text-lg text-gray-400 font-medium px-2 pb-1 active" data-page="home">Home</button></li>
+                    <li><button class="nav-link text-lg text-gray-400 font-medium px-2 pb-1" data-page="bio">Bio</button></li>
+                    <li><button class="nav-link text-lg text-gray-400 font-medium px-2 pb-1" data-page="education">Education</button></li>
+                    <li><button class="nav-link text-lg text-gray-400 font-medium px-2 pb-1" data-page="advisor">Advisor</button></li>
+                    <li><button class="nav-link text-lg text-gray-400 font-medium px-2 pb-1" data-page="research">Research</button></li>
+                    <li><button class="nav-link text-lg text-gray-400 font-medium px-2 pb-1" data-page="academics">Academics</button></li>
+                    <li><button class="nav-link text-lg text-gray-400 font-medium px-2 pb-1" data-page="outcome">Publications</button></li>
+                    <li><button class="nav-link text-lg text-gray-400 font-medium px-2 pb-1" data-page="contact">Contact</button></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Main content area -->
+        <main id="main-content-area" class="flex-grow">
+            <!-- Home Page -->
+            <section id="home" class="page-content w-full p-8 md:p-16 lg:p-24 flex flex-col md:flex-row items-center text-center md:text-left space-y-12 md:space-y-0 md:space-x-16 min-h-screen justify-center mb-16 visible">
+                <div class="md:w-1/2 flex justify-center relative">
+                    <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
+                        <img id="profile-image" src="./assets/dp.jpeg" alt="Dayarnab Baidya" class="rounded-3xl shadow-2xl w-full h-auto object-cover border-4 border-gray-700 hover:scale-105 transition-transform duration-500" />
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex flex-col justify-center">
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight mb-4 animate-text-gradient">
+                        Dayarnab Baidya
+                    </h1>
+                    <p class="text-xl sm:text-2xl lg:text-3xl text-yellow-400 font-light animated-line mb-4">
+                        <span id="typewriter-text"></span>
+                    </p>
+                    <p class="mt-4 text-base sm:text-lg text-gray-400 max-w-xl mx-auto md:mx-0 leading-relaxed">
+                        Thanks for visiting! Explore my site to learn more about me. If you have questions or would like to discuss feel free to get in touch.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Bio Page -->
+            <section id="bio" class="page-content w-full flex-col md:flex-row items-center md:items-start text-center md:text-left space-y-12 md:space-y-0 md:space-x-16 p-8 md:p-16 min-h-screen justify-center mb-16 hidden">
+                <div class="md:w-1/2">
+                    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-tight mb-8 text-center md:text-left">About Me</h1>
+                    <div class="space-y-6 text-gray-300 text-lg">
+                        <p>Dayarnab Baidya (Student Member, IEEE) received his B.Tech. degree in Electronics and Instrumentation Engineering from the National Institute of Technology (NIT) Agartala in 2017. He is currently pursuing a Ph.D. in the Department of Electrical Engineering and Computer Science at the Indian Institute of Science Education and Research (IISER) Bhopal, India, where he is a member of the i-Lab Research Group.</p>
+                        <p>His research interests span decision-making, control systems, optimization, electronic sensors and systems, flexible/printed and wearable electronics, wireless systems,  Internet of Things (IoT), and machine learning. He has published 17 research articles in reputed journals and international conferences and has contributed to 2 book chapters.</p>
+                        <p>In recognition of his academic excellence and research contributions, he was awarded the prestigious Prime Minister’s Research Fellowship (PMRF) in 2023. He actively serves as a reviewer for several renowned journals and conferences published by Springer, Elsevier, IEEE, and others.</p>
+                        <div class="mt-8 space-y-2">
+                            <p class="text-gray-50 font-semibold text-xl">Orcid ID: 0000-0002-1134-1121</p>
+                            <p class="text-gray-50 font-semibold text-xl">Scopus Author ID: 57202346852</p>
+                        </div>
+                        <div class="flex flex-wrap justify-center md:justify-start items-center space-x-4 mt-6">
+                            <a href="https://scholar.google.com/citations?user=your-id" target="_blank" rel="noopener noreferrer" class="social-icon group"><div class="icon-container bg-blue-500"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 18a8 8 0 118-8 8 8 0 01-8 8zM12 6a4 4 0 104 4 4 4 0 00-4-4zm0 2a2 2 0 11-2 2 2 2 0 012-2zm-2.8 9.5l-4.1-4.1-1.4 1.4L8.2 18l5.9-5.9-1.4-1.4z"/></svg></div></a>
+                            <a href="https://www.researchgate.net/profile/Dayarnab-Baidya" target="_blank" rel="noopener noreferrer" class="social-icon group"><div class="icon-container bg-teal-500"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm4.5 13.5l-2.4-2.4V8.5h-1.2v2.6l-2.4 2.4-1.2-1.2 3.6-3.6 3.6 3.6-1.2 1.2z"/></svg></div></a>
+                            <a href="https://www.linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" class="social-icon group"><div class="icon-container bg-blue-700"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white"><path d="M20.447 20.447h-3.414v-5.267c0-1.258-.023-2.879-1.754-2.879-1.755 0-2.023 1.369-2.023 2.784v5.362h-3.414V9.664h3.27v1.498h.047a3.753 3.753 0 013.385-1.859c3.62 0 4.288 2.38 4.288 5.485v6.159zM6.921 7.971a2.039 2.039 0 01-2.04-2.04 2.039 2.039 0 012.04-2.04 2.039 2.039 0 012.04 2.04 2.039 2.039 0 01-2.04 2.04zm1.707 12.476H5.215V9.664h3.413v10.783z"/></svg></div></a>
+                            <a href="https://openreview.net/profile?id=~Dayarnab_Baidya1" target="_blank" rel="noopener noreferrer" class="social-icon group"><div class="icon-container bg-gray-600"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm4.5 12.5l-4-4-4 4 1-1 3-3 3 3-1 1z"/></svg></div></a>
+                            <a href="https://orcid.org/0000-0002-1134-1121" target="_blank" rel="noopener noreferrer" class="social-icon group"><div class="icon-container bg-green-500"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm-4.7 13.3l-1.3-1.3 2.7-2.7 1.3 1.3-2.7 2.7zm6.7-.1l-1.3-1.3 2.7-2.7 1.3 1.3-2.7 2.7zm-2.2-4.1l1.3-1.3-2.7-2.7-1.3 1.3 2.7 2.7z"/></svg></div></a>
+                        </div>
+                        <div class="mt-8 flex justify-center md:justify-start">
+                            <button id="bio-contact-btn" class="get-in-touch-btn">Get In Touch</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="./assets/dp.jpeg" alt="Dayarnab Baidya" class="rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-full h-auto border-4 border-gray-700" />
+                </div>
+            </section>
+
+            <!-- Education Page -->
+            <section id="education" class="page-content w-full max-w-5xl mx-auto flex-col items-center p-8 md:p-12 min-h-screen justify-center mb-16 hidden">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-tight">Educational Background</h1>
+                </div>
+                <div class="w-full space-y-10 mt-8">
+                    <div class="p-8 rounded-2xl"><div class="flex flex-col md:flex-row items-start justify-between space-y-4 md:space-y-0"><div><h2 class="text-xl font-bold text-yellow-400 mb-2">Doctor of Philosophy (Ph.D.)</h2><p class="text-lg text-gray-300 font-semibold">January 2021 - June 2025</p></div><div class="md:text-right space-y-1 text-gray-400 text-sm md:w-1/2"><p>i lab, Electrical Engineering & Computer Science</p><p>Indian Institute of Science Education and Research, Bhopal</p><p>CPI: 9.00</p><p>Subjects studied (Course work): Smart Sensing Technologies, Introduction to MEMS, Digital Circuits and Systems, Analog Circuits, Numerical Methods in Chemical Engineering, Law Relating to Intellectual Property and Patents, Microfluidic Engineering, Nanomaterials: Fundamentals and their Characterization, MOS Device Modeling and Characterization</p></div></div></div>
+                    <div class="p-8 rounded-2xl"><div class="flex flex-col md:flex-row items-start justify-between space-y-4 md:space-y-0"><div><h2 class="text-xl font-bold text-yellow-400 mb-2">Bachelor of Technology</h2><p class="text-lg text-gray-300 font-semibold">July 2013 - July 2017</p></div><div class="md:text-right space-y-1 text-gray-400 text-sm md:w-1/2"><p>Electronics and Instrumentation Engineering</p><p>National Institute of Technology Agartala</p><p>CGPA: 8.85</p></div></div></div>
+                    <div class="p-8 rounded-2xl"><div class="flex flex-col md:flex-row items-start justify-between space-y-4 md:space-y-0"><div><h2 class="text-xl font-bold text-yellow-400 mb-2">Higher Secondary Examination</h2><p class="text-lg text-gray-300 font-semibold">January 2011 - May 2013</p></div><div class="md:text-right space-y-1 text-gray-400 text-sm md:w-1/2"><p>Tripura Board of Secondary Education</p><p>Percentage: 80.40%</p></div></div></div>
+                    <div class="p-8 rounded-2xl"><div class="flex flex-col md:flex-row items-start justify-between space-y-4 md:space-y-0"><div><h2 class="text-xl font-bold text-yellow-400 mb-2">Secondary Examination</h2><p class="text-lg text-gray-300 font-semibold">June 2011</p></div><div class="md:text-right space-y-1 text-gray-400 text-sm md:w-1/2"><p>Tripura Board of Secondary Education</p><p>Percentage: 82.14%</p></div></div></div>
+                </div>
+            </section>
+
+            <!-- Advisor Page -->
+            <section id="advisor" class="page-content w-full max-w-4xl mx-auto flex-col items-center text-center p-8 md:p-12 min-h-screen justify-center mb-16 hidden">
+                <div class="p-10 rounded-3xl"><img src="./assets/advisor.jpg" alt="Dr. Mitradip Bhattacharjee" class="rounded-full shadow-lg w-60 h-60 mb-6 mx-auto border-4 border-yellow-400" /><h1 class="text-4xl font-bold text-white mb-2">Dr. Mitradip Bhattacharjee</h1><p class="text-lg font-medium text-yellow-400">Assistant Professor</p><p class="text-md text-gray-400">Electrical Engineering and Computer Science</p><p class="text-md text-gray-400 mb-4">IISER Bhopal</p><a href="mailto:mitradip@iiserb.ac.in" class="text-lg text-yellow-400 hover:underline flex items-center justify-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>Contact</span></a></div>
+                <div class="mt-12 text-left max-w-3xl mx-auto"><h2 class="text-3xl font-bold text-white mb-4 border-b-2 border-yellow-400/50 pb-2">Brief Bio</h2><p class="text-gray-300 text-lg leading-relaxed mb-6">Mitradip Bhattacharjee (Senior Member, IEEE) received B.Tech. in Electronics and Communication Engineering from National Institute of Technology (NIT) Agartala in 2013 and the Ph.D. degree from the Indian Institute of Technology (IIT) Guwahati, India, in 2018. Subsequently, he joined the University of Glasgow, U.K., as a Postdoctoral Fellow. He is currently an Assistant Professor with the Electrical Engineering and Computer Science Department, Indian Institute of Science Education and Research (IISER) Bhopal, India, where he is leading the i-Lab Research Group.</p><p class="text-gray-300 text-lg leading-relaxed">His research interests include electronic sensors and systems, biomedical engineering, bioelectronics, flexible/printed and wearable electronics, wireless systems, IoT, micro/nanoelectronics, and reconfigurable sensing antenna. He has authored more than 50 research articles in reputed journals/conferences and filed more than 15 national/international patents. He also has authored several book chapters/books to date. He is the recipient of several awards such as Marie-Curie Seal of Excellence Award by the European Commission in 2019, Nanochallange Award by PSG in 2018, Gandhian Young Technological Innovation Award at Rashtrapati Bhavan in 2016 among others. He served as the chair of IEEE sensors council young professionals in 2022.</p></div>
+                <div class="mt-8 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4"><p class="text-gray-400 text-lg">For more information, kindly visit</p><a href="https://www.ilab-research.com/" target="_blank" rel="noopener noreferrer" class="btn-primary">i lab</a></div>
+            </section>
+
+            <!-- Research Page -->
+            <section id="research" class="page-content w-full max-w-5xl mx-auto p-8 md:p-12 min-h-screen justify-center mb-16 hidden flex-col">
+                <h1 class="text-4xl sm:text-5xl font-bold text-white mb-12 text-center">My Research World</h1>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-4 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flask-conical"><path d="M10 16a2 2 0 1 1 4 0"/><path d="M14 16V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v12"/><path d="M8 22h8"/><path d="M7 16h10"/></svg><span>Research Objective</span></h2><p class="text-lg font-semibold text-gray-300 mb-2">Title: Response and Parameter Optimization of Low-Noise Sensing System for Wearable and Biomedical Applications</p></div>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg><span>Research Interests</span></h2><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"><div class="bg-gray-900 p-5 rounded-xl flex items-center space-x-4 text-gray-50 text-xl font-medium shadow-md hover:bg-gray-700 transition-colors duration-200"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Decision Making</span></div><div class="bg-gray-900 p-5 rounded-xl flex items-center space-x-4 text-gray-50 text-xl font-medium shadow-md hover:bg-gray-700 transition-colors duration-200"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Flexible Sensors & Electronics</span></div><div class="bg-gray-900 p-5 rounded-xl flex items-center space-x-4 text-gray-50 text-xl font-medium shadow-md hover:bg-gray-700 transition-colors duration-200"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Digital Health</span></div><div class="bg-gray-900 p-5 rounded-xl flex items-center space-x-4 text-gray-50 text-xl font-medium shadow-md hover:bg-gray-700 transition-colors duration-200"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Internet of Things</span></div><div class="bg-gray-900 p-5 rounded-xl flex items-center space-x-4 text-gray-50 text-xl font-medium shadow-md hover:bg-gray-700 transition-colors duration-200"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Control Systems</span></div><div class="bg-gray-900 p-5 rounded-xl flex items-center space-x-4 text-gray-50 text-xl font-medium shadow-md hover:bg-gray-700 transition-colors duration-200"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Machine Learning</span></div><div class="bg-gray-900 p-5 rounded-xl flex items-center space-x-4 text-gray-50 text-xl font-medium shadow-md hover:bg-gray-700 transition-colors duration-200"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Optimization</span></div><div class="bg-gray-900 p-5 rounded-xl flex items-center space-x-4 text-gray-50 text-xl font-medium shadow-md hover:bg-gray-700 transition-colors duration-200"><div class="w-2 h-2 bg-yellow-400 rounded-full"></div><span>Deep Learning</span></div></div></div>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.896a8 8 0 1 0-6.955 0"/><path d="M12 18V22l-1 1-1-1-1-1"/></svg><span>Research Society Memberships</span></h2><ul class="list-disc list-inside text-gray-300 space-y-2 text-lg"><li>Student Member, IEEE</li><li>Student Member, ACM</li><li>Student Member, Automatic Control & Dynamic Optimization Society (ACDOS), IFAC</li><li>Member, International Society on MCDM</li><li>Member, International Society of Fuzzy Set Extensions and Applications (ISFSEA)</li><li>Member, Operational Research Society of India (ORSI)</li></ul></div>
+                <div class="p-8 rounded-3xl"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Writing & Reviewing Activities</span></h2><ul class="list-disc list-inside text-gray-300 space-y-2 text-lg"><li>Technical Content Writer, IEEE Sensors Alert, a pilot project of the IEEE Sensors Council.</li><li>TPC reviewer, 11th International Conference on Communication and Signal Processing (ICCSP)</li><li>Reviewer, Sustainability Analytics and Modeling, Elsevier.</li><li>Reviewer, Engineering Applications of Artificial Intelligence, Elsevier.</li><li>Reviewer, IEEE Applied Sensing Conference (APSCON).</li><li>Meta-reviewer, IEEE International Students' Conference on Electrical, Electronics and Computer Sciences (SCEECS).</li><li>Reviewer, Information Sciences, Elsevier.</li><li>Reviewer, IEEE Sensors Letters.</li><li>Reviewer, Neural Computing & Applications, Springer.</li><li>Reviewer, Soft Computing, Springer.</li><li>Reviewer, Expert Systems With Applications, Elsevier.</li><li>Reviewer, International Journal of Mechanical Engineering and Robotics Research.</li><li>Reviewer, International Journal of Machine Learning.</li><li>Reviewer, Environmental Earth Science, Springer.</li><li>Reviewer, Technological Forecasting and Social Change, Elsevier.</li></ul></div>
+            </section>
+
+            <!-- Academics Page -->
+            <section id="academics" class="page-content w-full max-w-5xl mx-auto p-8 md:p-12 min-h-screen mb-16 hidden flex-col">
+                <h1 class="text-4xl sm:text-5xl font-bold text-white mb-12 text-center">Academic Activities</h1>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-4 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.4 15.3c-.5.3-1.1.5-1.7.5H4.3c-.6 0-1.2-.2-1.7-.5-1.5-.9-1.5-2.2-.1-3.1l8-4.9c.7-.4 1.5-.4 2.2 0l8 4.9c1.4.9 1.4 2.2-.1 3.1z"/><path d="M21 12v3.3l-9-5.5-9 5.5V12"/><path d="M12 4v16"/><path d="M5.5 17.5v-3"/><path d="M18.5 14.5v3"/></svg><span>Teaching Assistantship</span></h2><div class="ml-4 space-y-6"><div><h3 class="text-xl font-semibold text-gray-50 mb-2">In IISER Bhopal:</h3><ul class="list-disc list-inside text-gray-300 space-y-1 text-lg"><li>ECS 327: Electronics Laboratory</li><li>ECS 204: Signals & Systems</li><li>ECS 321: Electronic Devices</li></ul></div><div><h3 class="text-xl font-semibold text-gray-50 mb-2">Outside IISER Bhopal:</h3><ul class="list-disc list-inside text-gray-300 space-y-1 text-lg"><li><strong>Control Systems</strong> - Electronics & Communication Engineering, University Institute of Technology, RGPV University, Bhopal, MP, India</li><li><strong>EC 303: Electronic Measurements And Instrumentation</strong> - Electronics & Communication Engineering, University Institute of Technology, RGPV University, Bhopal, MP, India</li><li><strong>EC 503: Digital Communications</strong> - Electronics & Communication Engineering, University Institute of Technology, RGPV University, Bhopal, MP, India</li><li><strong>Signals & Systems</strong> - Electronics & Communication Engineering, University Institute of Technology, RGPV University, Bhopal, MP, India</li></ul></div></div></div>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-4 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>NPTEL Course</span></h2><div class="ml-4 text-gray-300 text-lg"><p class="font-semibold">Sensor Technologies: Physics, Fabrication, and Circuits</p><p>By Prof. Mitradip Bhattacharjee</p><a href="#" class="text-yellow-400 hover:underline">Link to Course</a></div></div>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-4 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M5 21v-2a4 4 0 0 1 3-3.87"/><path d="M19 8a2 2 0 0 1 0 4"/><path d="M5 8a2 2 0 0 0 0 4"/></svg><span>Social Activity</span></h2><div class="ml-4 text-gray-300 text-lg"><p class="font-semibold">Peer Counsellor</p><p>IISER Bhopal</p></div></div>
+                <div class="p-8 rounded-3xl"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-4 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Other Activities</span></h2><ol class="list-decimal list-inside text-gray-300 space-y-2 text-lg ml-4"><li>Volunteer at INVEST MADHYA PRADESH GLOBAL INVESTORS SUMMIT, 24-25 February 2025, Bhopal.</li><li>Poster presentation titled 'Transistor Selection for Low Noise Amplifier using MCDM Approach' in 11th Bhopal Vigyan Mela-2024 (BVM-2024), 27-30 December 2024, Jamburi Maidan, Bhopal.</li><li>Participated in a workshop titled 'Workshop on Energy Conversion and Storage' in Chemical Engineering Dept., IISER Bhopal, 13-14 December 2024.</li><li>My research work was highlighted on the cover page of "The EECS Magazine" of the EECS Dept, IISER Bhopal, October 2024, Vol.1, Issue 1.</li><li>Participated in an online Faculty Development Program on 'Advanced Research Methodology & Data Analytics,' 21-27 October 2024.</li><li>Participated in an online webinar titled 'Modeling and Simulation of MEMS Devices' in IEEE Educational Activities, 19 September 2024.</li><li>Talk titled 'Flexible Substrate Selection using Multi-Criteria Decision Making' in EECS Research Symposium 2023, IISER Bhopal.</li><li>Poster presentation titled 'Optimization Based Novel PID Controller for Speed Control of DC Motor in Electric Vehicles' in EECS Research Symposium 2023, IISER Bhopal. (Best Poster Award)</li><li>Poster presentation titled 'Natural fiber selection using novel hybridized MCDM technique to use as substrate for flexible sensor', Engineers Day 2022, IISER Bhopal.</li><li>Poster presentation titled 'Substrate Optimization of Flexible Temperature Sensor for Wearable Applications', Open House Day 2022, IISER Bhopal.</li><li>Volunteer at MEDSER 2022, IISER Bhopal.</li><li>Interviewed Dr. G. Satheesh Reddy, Ex. DRDO Chairman at Convocation Day, IISER Bhopal.</li><li>Participated in the 8th India International Science Festival-2022 (IISF), MANIT Bhopal, 21-24 January 2023.</li></ol></div>
+            </section>
+
+            <!-- Publications Page -->
+            <section id="outcome" class="page-content w-full max-w-5xl mx-auto p-8 md:p-12 min-h-screen mb-16 hidden flex-col">
+                <h1 class="text-4xl sm:text-5xl font-bold text-white mb-12 text-center">Publications</h1>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg><span>Journal Publications</span></h2><ol class="list-decimal list-inside text-gray-300 space-y-4 ml-4 text-lg"><li>Abhinav Chandel, Vishrant Kumar, Jitendra Choudhary, Prachi Upadhyay, <span class="text-green-400">Dayarnab Baidya</span>, Mitradip Bhattacharjee*, Sankar Chakma*, "Sono-Extracted Crystalline Nanocellulose Thin Film as Supporting Material for Fabrication of Highly Sensitive and Stable Flexible Sensors for Thermal Applications." <em>ACS Applied Engineering Materials</em>, 2023.</li><li><span class="text-green-400">Dayarnab Baidya</span>, Shreya Dhopte, and Mitradip Bhattacharjee*. "Natural fiber selection using novel hybridized MCDM technique to use as substrate for flexible sensor." <em>Materials Letters</em> 341 (2023): 134258. [Impact Factor: 3]</li><li><span class="text-green-400">Dayarnab Baidya</span>, Shreya Dhopte, Mitradip Bhattacharjee*, "Sensing System Assisted Novel PID controller for Efficient Speed Control of DC Motors in Electric Vehicle", <em>IEEE Sensors Letters</em> (Invited and Accepted) 2022, [Impact Factor: 2.35].</li><li><span class="text-green-400">Dayarnab Baidya</span>, Mitradip Bhattacharjee*, Substrate Optimization of Flexible Temperature Sensor for Wearable Applications. <em>IEEE Sensors Journal</em>, 22(15), 15393-15401. 2022. [Impact Factor: 4.32].</li><li>Priyanka Majumder*, Valentina Emilia Balas, Arnab Paul, and <span class="text-green-400">Dayarnab Baidya</span>, "Application of improved fuzzy best worst analytic hierarchy process on renewable energy." <em>PeerJ Computer Science</em> 7 (2021): e453. [Impact Factor: 2.41]</li><li>Priyanka Majumder*, <span class="text-green-400">Dayarnab Baidya</span> and Mrinmoy Majumder. "Application of novel intuitionistic fuzzy BWAHP process for analyzing the efficiency of water treatment plant." <em>Neural Computing and Applications</em> 33.24 (2021): 17389-17405. [Impact Factor: 5.102]</li><li>Priyanka Majumder*, Arnab Paul, Pratik Saha, Mrinmoy Majumder, <span class="text-green-400">Dayarnab Baidya</span>, and Dhritiman Saha. "Trapezoidal fuzzy BWM-TOPSIS approach and application on water resources." <em>Environment, Development and Sustainability</em> (2022): 1-22. [Impact Factor: 4.080]</li></ol></div>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Conference Papers</span></h2><ol class="list-decimal list-inside text-gray-300 space-y-4 ml-4 text-lg"><li><span class="text-green-400">Dayarnab Baidya</span>, Athul Krishnan, Mitradip Bhattacharjee*, "Design and Optimization of Low Noise Amplifier Circuit for Sensor Applications," 3rd International <em>IEEE Applied Sensing Conference (APSCON 2025)</em>, Hyderabad, India, 20 - 22 January 2025.</li><li><span class="text-green-400">Dayarnab Baidya</span>, Athul Krishnan, Mitradip Bhattacharjee*, "Novel MCDM Scheme for Optimal Design of Low Noise Amplifier," <em>2024 IEEE International Conference on Recent Advances in Systems Science and Engineering (RASSE)</em>, Taichung, Taiwan, 06-08 November 2024.</li><li><span class="text-green-400">Dayarnab Baidya</span>, Karthick Thiyagarajan, Mitradip Bhattacharjee*, Yang An, "Optimizing Transistor Selection Using AH-TOR for Low Noise Amplifier Design in Sensing Applications", <em>2024 17th International Conference on Sensing Technology (ICST)</em>, Sydney, Australia, 9 - 11 December 2024.</li><li><span class="text-green-400">Dayarnab Baidya</span>, Shivansh Singh, Saheli Roy, Mitradip Bhattacharjee*, "In-circuit Resistive Components for Temperature Sensing Application", 2nd International <em>IEEE Applied Sensing Conference (APSCON 2024)</em>, Goa, India, 22 - 24 January 2024.</li><li><span class="text-green-400">Dayarnab Baidya</span>, Shreya Dhopte, Mitradip Bhattacharjee*, "A Novel Scheme Based on Optimization for Controlling the Speed of PMBLDC Motor ", <em>IEEE International Symposium on Smart Electronic Systems (IEEE – iSES)</em>, Ahmedabad, India, 18 - 20 December 2023.</li><li>Athul Krishnan, <span class="text-green-400">Dayarnab Baidya</span>, Mitradip Bhattacharjee*, "Flexible Low Noise Amplifier for IoT Applications in Biomedical Devices", <em>2023 IEEE International Conference on Recent Advances in Systems Science and Engineering</em>, Kerala, India, 8-11 November 2023.</li><li><span class="text-green-400">Dayarnab Baidya</span>, Shreya Dhopte, Mitradip Bhattacharjee*, "Novel PID Controller for Electric Vehicles ", <em>IEEE Applied Sensing Conference (APSCON 2023)</em>, Bengaluru, India, 23 - 25 January 2023.</li><li>Lakhvir Singh, <span class="text-green-400">Dayarnab Baidya</span>, Mitradip Bhattacharjee*, “Structurally Modified PDMS-based Capacitive Pressure Sensor”, <em>IEEE International Conference on Flexible and Printable Sensors and Systems (FLEPS - 2022)</em>, Vienna, Austria, 10 - 13 July 2022.</li><li><span class="text-green-400">Dayarnab Baidya</span>, Athul Krishnan, Mitradip Bhattacharjee*, "Low Noise Amplifier for the Wearable IoT Sensing System", <em>2022 IEEE Global Conference on Computing, Power and Communication Technologies (GlobConPT)</em>, New Delhi, India, 23-25 September 2022.</li><li>Kamalesh Tripathy, Kamran Habib, <span class="text-green-400">Dayarnab Baidya</span>, Mitradip Bhattacharjee*, "Microheater Structures to Achieve Uniform Temperature Distribution for Flexible Gas Sensing Application", 6th <em>IEEE International Conference on Emerging Electronics (ICEE)</em>, Bangalore, India, 11-14 December 2022.</li></ol></div>
+                <div class="p-8 rounded-3xl mb-12"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg><span>Book Chapters</span></h2><ol class="list-decimal list-inside text-gray-300 space-y-4 ml-4 text-lg"><li><span class="text-green-400">Dayarnab Baidya</span>, Ruchee Bhagwat, Mitradip Bhattacharjee*, "The Use of the Cognitive Internet of Things in Smart Sensing Applications", <em>Cognitive Sensors: Vol 1 Intelligent Sensing, Sensor Data Analysis and Applications</em>. 2022. IOP Publishing.</li><li><span class="text-green-400">Dayarnab Baidya</span>*, Rupam Gupta Roy. "Speed control of DC motor using fuzzy-based intelligent model reference adaptive control scheme," <em>Advances in communication, devices and networking</em>, 2018. Springer.</li></ol></div>
+                <div class="p-8 rounded-3xl"><h2 class="text-2xl sm:text-3xl font-bold text-yellow-400 mb-6 flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>Technical Contents</span></h2><ol class="list-decimal list-inside text-gray-300 space-y-4 ml-4 text-lg"><li>Design and Realization of Wide Field-of-View 3D MEMS LiDAR</li><li>Soft Biomimetic Optical Tactile Sensing With the TacTip: A Review</li><li>Metal-Organic Framework Materials Coupled to Optical Fibers for Chemical Sensing: A Review</li><li>A Novel Differential Capacitive Humidity Sensor on SIW Re-Entrant Cavity Microwave Resonators With PEDOT:PSS Film</li></ol></div>
+                <p class="text-sm italic text-gray-400 mt-8 text-center">* denotes the corresponding author.</p>
+            </section>
+
+            <!-- Contact Page -->
+            <section id="contact" class="page-content w-full max-w-5xl mx-auto p-8 md:p-12 text-center min-h-screen justify-center mb-16 hidden flex-col">
+                <h1 class="text-5xl font-bold text-white mb-8">Let's Connect</h1>
+                <div class="flex flex-col md:flex-row justify-center items-start md:space-x-16 space-y-12 md:space-y-0">
+                    <div class="flex-1 max-w-sm w-full md:text-left space-y-6"><div class="contact-info-card"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin text-yellow-400 flex-shrink-0"><path d="M18 8c0 4.5-6 9-6 9s-6-4.5-6-9c0-3.3 2.7-6 6-6s6 2.7 6 6z"/><circle cx="12" cy="8" r="3"/></svg><div class="flex-1"><p class="font-semibold text-gray-50 text-xl">Address</p><p class="text-gray-300 text-base">Room No-406, Academic Building 1C (4D Building), IISER Bhopal,<br/> Bhauri, Bhopal, Madhya Pradesh, India, 462066</p></div></div><div class="contact-info-card"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail text-yellow-400 flex-shrink-0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><div class="flex-1"><p class="font-semibold text-gray-50 text-xl">Email</p><p><a href="mailto:dayarnab20@iiserb.ac.in" class="hover:underline text-gray-300 text-base">dayarnab20@iiserb.ac.in</a></p><p><a href="mailto:dayarnab.in@gmail.com" class="hover:underline text-gray-300 text-base">dayarnab.in@gmail.com</a></p></div></div><div class="overflow-hidden rounded-2xl"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3663.265147814785!2d77.26941197607739!3d23.366472401826068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x397c6d66e86b0393%3A0x1d75f284d720b001!2sIndian%20Institute%20of%20Science%20Education%20and%20Research%2C%20Bhopal!5e0!3m2!1sen!2sin!v1716353911295!5m2!1sen!2sin" width="100%" height="300" style="border: 0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div></div>
+                    <div class="flex-1 w-full max-w-md p-8 rounded-3xl contact-form-container"><form action="#" method="POST" class="space-y-6"><div><input type="text" name="name" id="name" placeholder="Name *" class="contact-input" required /></div><div><input type="email" name="email" id="email" placeholder="Email *" class="contact-input" required /></div><div><input type="tel" name="phone" id="phone" placeholder="Phone" class="contact-input" /></div><div><input type="text" name="address" id="address" placeholder="Address" class="contact-input" /></div><div><input type="text" name="subject" id="subject" placeholder="Subject" class="contact-input" /></div><div><textarea name="message" id="message" rows="5" placeholder="Type your message here..." class="contact-input"></textarea></div><div class="text-center"><button type="submit" class="btn-primary">Submit</button></div></form></div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="w-full text-center py-6">
+            <hr class="my-4 border-t-2 border-gray-800 max-w-2xl mx-auto" />
+            <p class="text-sm text-gray-500">&copy; 2025 Dayarnab Baidya. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Self-invoking function for encapsulation
+        (function() {
+            // --- Interactive Canvas Animation ---
+            const canvas = document.getElementById('canvas-background');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let goldParticles = [];
+            const mouse = { x: null, y: null, radius: 100 };
+
+            function setCanvasSize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                initParticles();
+            }
+            window.addEventListener('resize', setCanvasSize);
+            
+            window.addEventListener('mousemove', (event) => {
+                mouse.x = event.x;
+                mouse.y = event.y;
+            });
+
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            // Particle class for the interactive constellation
+            class Particle {
+                constructor(x, y, directionX, directionY, size, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.directionX = directionX;
+                    this.directionY = directionY;
+                    this.size = size;
+                    this.color = color;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+
+                update() {
+                    if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                    if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius + this.size) {
+                        if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 3;
+                        if (mouse.x > this.x && this.x > this.size * 10) this.x -= 3;
+                        if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 3;
+                        if (mouse.y > this.y && this.y > this.size * 10) this.y -= 3;
+                    }
+
+                    this.x += this.directionX;
+                    this.y += this.directionY;
+                    this.draw();
+                }
+            }
+            
+            // Particle class for the drifting golden dust
+            class GoldParticle {
+                 constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 1 + 0.5;
+                    this.speedX = Math.random() * 0.3 - 0.15;
+                    this.speedY = Math.random() * 0.3 - 0.15;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.size > 0.1) this.size -= 0.005;
+                     if (this.size <= 0.1) {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 1 + 0.5;
+                    }
+                }
+                draw() {
+                    ctx.fillStyle = 'rgba(212, 175, 55, 0.4)';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                goldParticles = [];
+                let numberOfParticles = (canvas.height * canvas.width) / 9000;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    let size = (Math.random() * 1.5) + 0.5;
+                    let x = (Math.random() * (innerWidth - size * 2));
+                    let y = (Math.random() * (innerHeight - size * 2));
+                    let directionX = (Math.random() * 0.4) - 0.2;
+                    let directionY = (Math.random() * 0.4) - 0.2;
+                    let color = 'rgba(107, 114, 128, 0.3)';
+                    particles.push(new Particle(x, y, directionX, directionY, size, color));
+                }
+                
+                let numberOfGoldParticles = (canvas.height * canvas.width) / 12000;
+                for (let i = 0; i < numberOfGoldParticles; i++) {
+                    goldParticles.push(new GoldParticle());
+                }
+            }
+
+            function connectParticles() {
+                let opacityValue = 1;
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a; b < particles.length; b++) {
+                        let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x)) +
+                            ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+                        
+                        if (distance < (canvas.width / 8) * (canvas.height / 8)) {
+                            opacityValue = 1 - (distance / 20000);
+                            ctx.strokeStyle = `rgba(55, 65, 81, ${opacityValue})`;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, innerWidth, innerHeight);
+                
+                for (let i = 0; i < goldParticles.length; i++) {
+                    goldParticles[i].update();
+                    goldParticles[i].draw();
+                }
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                }
+                connectParticles();
+            }
+
+            // --- Typewriter Effect ---
+            const typewriterTextRef = document.getElementById('typewriter-text');
+            const phrases = ["A prime minister research fellow who designs intelligent systems that sense, think, and decide through optimization magic."];
+            
+            let currentPhraseIndex = 0;
+            let currentCharacterIndex = 0;
+            let isDeleting = false;
+            
+            const type = () => {
+                if (!typewriterTextRef) return;
+                const currentPhrase = phrases[currentPhraseIndex];
+                if (isDeleting) {
+                    typewriterTextRef.textContent = currentPhrase.substring(0, currentCharacterIndex - 1);
+                    currentCharacterIndex--;
+                } else {
+                    typewriterTextRef.textContent = currentPhrase.substring(0, currentCharacterIndex + 1);
+                    currentCharacterIndex++;
+                }
+
+                let typingSpeed = isDeleting ? 50 : 150;
+                
+                if (!isDeleting && currentCharacterIndex === currentPhrase.length) {
+                    typingSpeed = 2000;
+                    isDeleting = true;
+                }
+                
+                if (isDeleting && currentCharacterIndex === 0) {
+                    isDeleting = false;
+                    currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+                    typingSpeed = 500;
+                }
+                
+                setTimeout(type, typingSpeed);
+            };
+
+            // --- Page Navigation ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page-content');
+            let activePageId = 'home';
+            
+            const switchPage = (pageId) => {
+                if (!pageId) return;
+                pages.forEach(page => page.classList.add('hidden'));
+                pages.forEach(page => page.classList.remove('visible'));
+                
+                const newPage = document.getElementById(pageId);
+                if (newPage) {
+                    newPage.classList.remove('hidden');
+                    newPage.classList.add('visible');
+                    activePageId = pageId;
+                }
+
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.page === pageId);
+                });
+            };
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    switchPage(event.target.dataset.page);
+                });
+            });
+
+            const bioContactBtn = document.getElementById('bio-contact-btn');
+            if(bioContactBtn) {
+                bioContactBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    switchPage('contact');
+                });
+            }
+
+             // --- Dynamic Quote Fetching ---
+            const fetchDynamicContent = async () => {
+                const quoteTextEl = document.getElementById('quote-text');
+                const authorTextEl = document.getElementById('author-text');
+                
+                let retryCount = 0;
+                const maxRetries = 3;
+                const baseDelay = 1000;
+
+                while (retryCount < maxRetries) {
+                    try {
+                        const prompt = "Provide a short, inspirational quote and its author. Format your response exactly as: \"Quote: [the quote text]\" and \"Author: [the author's name]\". Do not include any other text or punctuation.";
+                        const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; 
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+                        if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts) {
+                            const text = result.candidates[0].content.parts[0].text;
+                            const quoteMatch = text.match(/Quote: "([^"]+)"/);
+                            const authorMatch = text.match(/Author: "([^"]+)"/);
+                            
+                            const newQuote = quoteMatch ? quoteMatch[1] : "The secret of getting ahead is getting started.";
+                            const newAuthor = authorMatch ? authorMatch[1] : "MARK TWAIN";
+
+                            quoteTextEl.textContent = `"${newQuote}"`;
+                            authorTextEl.textContent = newAuthor.toUpperCase();
+                            return; 
+                        } else {
+                            throw new Error('API response error');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching quote:', error);
+                        retryCount++;
+                        if (retryCount >= maxRetries) {
+                           quoteTextEl.textContent = "The secret of getting ahead is getting started.";
+                           authorTextEl.textContent = "MARK TWAIN";
+                        } else {
+                           await new Promise(res => setTimeout(res, baseDelay * Math.pow(2, retryCount)));
+                        }
+                    }
+                }
+            };
+
+            // --- Initial Load ---
+            window.onload = () => {
+                setCanvasSize();
+                animate();
+                type();
+                switchPage('home');
+                fetchDynamicContent();
+            };
+        })();
+    </script>
+</body>
+</html>
